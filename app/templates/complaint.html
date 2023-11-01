@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="static/assets/css/styles.css" />
+    <title>Diamond Admin</title>
+</head>
+
+<body>
+    <header>
+        <h1>User Complaint</h1>
+    </header>
+    <div class="sidebar">
+        <img src="static/assets/images/download.jpg" alt="LOGO" style="height: 75px; width: 70px; border-radius: 50px" />
+        <br /><br /><br />
+        <a class="active" href="{{url_for('home')}}">Home</a>
+    <a class="active" href="{{url_for('users')}}">Users</a>
+    <a href="{{url_for('complaints')}}">Complaints</a>
+    <a href="{{url_for('wr')}}">Withdrawal Requests</a>
+    </div>
+    <!-- Content -->
+    <div class="content">
+        <!-- Your main content goes here -->
+    </div>
+    <main>
+        <section id="chat-section">
+            <h2 style="
+            color: rgb(99, 105, 103);
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-weight: 300;
+          ">
+                User Complaint
+            </h2>
+            <div id="chat-container" class="chatarea" style="background-color: rgb(245, 255, 254)">
+                <p class="chatbot-message" style="
+              font-size: 17px;
+              color: rgb(106, 111, 112);
+              font-family: Verdana, Geneva, Tahoma, sans-serif;
+            ">
+                   
+                    <br />
+                <pre style="overflow: auto">Subject:  subject </pre>
+                <br />
+                Message:
+                <br>
+                <br /><p style="font-family: monospace;">HI, I am trying to withdraw my trons but they are not withdrawing, can you please help me resolve the issue, 
+                thanks</p>
+                <br />
+                
+
+                </p>
+            </div>
+            <form id="chat-form" action="/parson_rec" method="post" enctype="multipart/form-data">
+                <input type="number" id="chat-input" placeholder="enter response here" name="response" />
+                <button type="submit" id="submit-button">Send</button>
+            </form>
+        </section>
+      </main>
+</body>
+
+</html>

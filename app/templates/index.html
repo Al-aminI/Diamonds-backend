@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="static/assets/css/styles.css" />
+    <title>Diamond Admin</title>
+</head>
+
+<body>
+    <header>
+        <h1>Diamond Admin Site</h1>
+    </header>
+    <div class="sidebar">
+        <img src="static/assets/images/download.jpg" alt="LOGO" style="height: 75px; width: 70px; border-radius: 50px" />
+        <br /><br /><br />
+        <a class="active" href="{{url_for('users')}}">Users</a>
+        <a href="{{url_for('complaints')}}">Complaints</a>
+        <a href="{{url_for('wr')}}">Withdrawal Requests</a>
+       
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <!-- Your main content goes here -->
+    </div>
+
+    <main>
+        <section id="upload-section">
+            <h2 style="
+            color: rgb(99, 105, 103);
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-weight: 500;
+          ">
+                Search User By Referral Id
+            </h2>
+            <form id="upload-form" action="/parson_ret" method="post" enctype="multipart/form-data">
+                <input type="text" placeholder="  referral id" name="ref_id"
+                    style="width: 100%; border-radius: 10px; height: 40px" />
+                <br /><br />
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+        <section id="note-section">
+            <h2 style="
+            color: rgb(99, 105, 103);
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-weight: 300;
+          ">
+                Parson's Basic informations:
+            </h2>
+            <div id="note-container" style="background-color: rgb(237, 250, 249)">
+                <h3 style="
+              font-weight: 200;
+              color: rgb(93, 99, 116);
+              font-family: Verdana, Geneva, Tahoma, sans-serif;
+            ">
+                    <br />ID: {{p_id}} <br />
+                    <br />
+                    <pre style="overflow: auto">Full Name: {{name}}</pre>
+                    <br />
+                    <pre style="overflow: auto">Email: {{email}}</pre>
+                    <br />
+                    <pre style="overflow: auto">Contact: {{contact}}</pre>
+                    <br />
+                    <pre style="overflow: auto">Gender: {{gender}}</pre>
+                    <br />
+                    <pre style="overflow: auto">Address: {{address}}</pre>
+                    <br />
+                    <pre style="overflow: auto">Diamonds: {{diamonds}}</pre>
+                    <br />
+                    <pre style="overflow: auto">Staked: {{staked}}</pre>
+                    <br />
+                    <pre style="overflow: auto">password: {{password}}</pre>
+                </h3>
+            </div>
+        </section>
+        <section id="note-section">
+            <h2 style="
+            color: rgb(99, 105, 103);
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-weight: 300;
+          ">
+                Withdrawal History:
+            </h2>
+            <div id="note-container" style="background-color: rgb(237, 250, 249)">
+                <h3 style="
+              font-weight: 200;
+              color: rgb(93, 99, 116);
+              font-family: Verdana, Geneva, Tahoma, sans-serif;
+            ">
+                    {% for h in history %}
+
+                    <br />
+                <pre style="overflow: auto">Withdrawal Time:  {{h.Created}} </pre>
+                <br />
+                <pre style="overflow: auto">
+                    Tron Wallet Address: {{h.Address}}</pre>
+                <br />
+                <pre style="overflow: auto">Tons Amount: {{h.trx_amt}}</pre>
+
+                {% endfor %}
+                </h3>
+            </div>
+        </section>
+        <section id="chat-section">
+            <h2 style="
+            color: rgb(99, 105, 103);
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-weight: 300;
+          ">
+                Send Notification to this User
+            </h2>
+            <div id="chat-container" class="chatarea" style="background-color: rgb(245, 255, 254)">
+                <p class="chatbot-message" style="
+              font-size: 17px;
+              color: rgb(106, 111, 112);
+              font-family: Verdana, Geneva, Tahoma, sans-serif;
+            ">
+                  
+                </p>
+            </div>
+            <form id="chat-form" action="/parson_rec" method="post" enctype="multipart/form-data">
+                <input type="number" id="chat-input" placeholder="type notification" name="response" />
+                <button type="submit" id="submit-button">Send</button>
+            </form>
+        </section>
+    </main>
+</body>
+
+</html>

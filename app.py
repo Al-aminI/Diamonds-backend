@@ -542,9 +542,35 @@ def chatRes():
         return jsonify({"message": "success"})
 
 
-@app.route("/")
+@app.route("/user")
+def user():
+
+    return render_template("user.html")
+
+@app.route("/home")
 def home():
-    return jsonify({"home":True})
+
+    return render_template("index.html")
+
+@app.route("/users")
+def users():
+
+    return render_template("users.html")
+
+@app.route("/complaints")
+def complaints():
+
+    return render_template("complaints.html")
+
+@app.route("/wr")
+def wr():
+
+    return render_template("wr.html")
+
+@app.route("/complaint")
+def complaint():
+
+    return render_template("complaint.html")
 
 def is_date(string, fuzzy=True):
     """
@@ -562,4 +588,4 @@ def is_date(string, fuzzy=True):
 
 if __name__ == "__main__":
     db.create_all()
-    app.run(debug=True)
+    app.run(debug=True, port=5004)
