@@ -9,7 +9,7 @@
 
   <body>
     <header>
-      <h1>Mega Diamond Minners</h1>
+      <h1>Mega Diamond Miners</h1>
     </header>
     <div class="sidebar">
         <img src="static/assets/images/download.jpg" alt="LOGO" style="height: 75px; width: 70px; border-radius: 50px" />
@@ -36,9 +36,9 @@
               font-family: Verdana, Geneva, Tahoma, sans-serif;
             "
           >
-            <br />user id {{user.id}} <br />
+            <br />Refferel_id:  {{user.referral_code}} <br />
             <br />
-            <pre style="overflow: auto">user name {{user.name}}</pre>
+            <pre style="overflow: auto">username:  <a href="{{url_for('user', referral_code=user.referral_code)}}"> {{user.name}} </a></pre>
             <br />
           </h3>
         </div>

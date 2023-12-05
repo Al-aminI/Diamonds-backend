@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, session, request, jsonify
+from flask import Flask, render_template, url_for, session, request, jsonify, redirect
 from app import models
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -155,6 +155,8 @@ def signup():
         password = data["password"]
         contact = data["contact"]
         country = data["country"]
+        state = data["state"]
+        city = data["city"]
         address = data["address"]
         gender = data["gender"]
         referrer = data["referrer"]
@@ -180,9 +182,11 @@ def signup():
             referral_code=referral_code,
             referrer=referrer,
             user_id=user_id,
+            state=state,
+            city=city
         )
 
-        ref_bounus = Diamonds.query.filter_by(referral_code=referral_code).first()
+        ref_bounus = Diamonds.query.filter_by(referral_code=referrer).first()
         if ref_bounus:
             ref_bounus.amount = str(float(ref_bounus.amount) + 10)
 
@@ -193,7 +197,7 @@ def signup():
         user_team = Team(user_id=user_id, name=name, referrer=referrer)
         notif = Notifications(
             user_id=user_id,
-            message="welcome to Mega Diamond Minner, your have been Rewarded with 10 Diamonds for joining Diamond Minner \
+            message="welcome to Mega Diamond Miner, your have been Rewarded with 10 Diamonds for joining Diamond Minner \
                               refer others with your referral code to get boununs of 10 more Diamonds for each referral",
         )
         diaadd = DiamondTasks(user_id=user_id,task1="",task2="",task3="",task4="", dia1="",dia2="",dia3="",dia4="")
@@ -286,7 +290,7 @@ def add_stake():
             sub_dia.amount = subamount - float(amount)
             notif = Notifications(
                 user_id=user_id,
-                message=f"You have uccessully staked {str(float(add_stake.amount)+float(amount))} so far, your remaining Diamonds Non-staked is {subamount}",
+                message=f"You have successully staked {str(float(add_stake.amount)+float(amount))} diamonds so far, your remaining Diamonds Non-staked is {subamount}",
             )
             db.session.add(notif)
             db.session.commit()
@@ -321,12 +325,14 @@ def get_stake():
     # if request.method == "POST":
     data = request.get_json()
     user_id = data["user_id"]
-   
-    add_stake = Stake.query.filter_by(user_id=user_id).first()
-    
-    amount = str(add_stake.amount)
-
-    return jsonify({"amount": amount})
+    response = []
+    add_stake = Stake.query.filter_by(user_id=user_id).all()
+    if add_stake:
+        for st in add_stake:
+            amount = " Diamonds:  " + str(st.amount)
+            created = " Staked:  " + str(st.Created)
+            response.append({"amount": amount, "created": created})
+    return jsonify(response)
    
 
 
@@ -355,33 +361,33 @@ def get_dia():
         date1 = parse(task.task1)
 
         if (now - date1) >= difference:
-            response["task1"] = True
-        else:
             response["task1"] = False
+        else:
+            response["task1"] = True
 
     if is_date(task.task2):
         date2 = parse(task.task2)
 
         if now - date2 >= difference:
-            response["task2"] = True
-        else:
             response["task2"] = False
+        else:
+            response["task2"] = True
 
     if is_date(task.task3):
         date3 = parse(task.task3)
 
         if now - date3 >= difference:
-            response["task3"] = True
-        else:
             response["task3"] = False
+        else:
+            response["task3"] = True
 
     if is_date(task.task4):
         date4 = parse(task.task4)
 
         if now - date4 >= difference:
-            response["task4"] = True
-        else:
             response["task4"] = False
+        else:
+            response["task4"] = True
 
     if is_date(task.dia1):
         date1 = parse(task.dia1)
@@ -490,8 +496,9 @@ def add_withdrawals():
         address = data["address"]
         dia_amt = data["amount"]
         diamonds = Diamonds.query.filter_by(user_id=user_id).first()
+        user =  Users.query.filter_by(user_id=user_id).first()
         if float(dia_amt) <= float(diamonds.amount):
-            history = Withdrawals(user_id=user_id, amount=dia_amt, address=address)
+            history = Withdrawals(user_id=user_id, amount=dia_amt, address=address, name = user.name)
             diamonds.amount = float(diamonds.amount) - float(dia_amt)
             notif = Notifications(
                 user_id=user_id,
@@ -516,8 +523,8 @@ def chat():
         subject = data["subject"]
         message = data["message"]
         user_id = data["user_id"]
-
-        chatMessage = LiveChat(user_id=user_id, subject=subject, message=message)
+        user =  Users.query.filter_by(user_id=user_id).first()
+        chatMessage = LiveChat(user_id=user_id, subject=subject, message=message, name=user.name)
         notif = Notifications(
                 user_id=user_id,
                 message=f"{subject} message sent successifully",
@@ -531,46 +538,105 @@ def chat():
 @app.route("/chatRes", methods=["POST"])
 def chatRes():
     if request.method == "POST":
-        data = request.get_json()
-        subject = data["subject"]
-        message = data["message"]
-        user_id = data["user_id"]
-
-        res = LiveChatRes(user_id=user_id, subject=subject, message=message)
+        
+        message = request.form["response"]
+        referral_code = session["referral_code"]
+        user = Users.query.filter_by(referral_code=referral_code).first()
+        res = LiveChatRes(user_id=user.user_id, message=message)
+        notif = Notifications(
+        user_id=user.user_id,
+        message=f"{str(message)}",
+        )
+        db.session.add(notif)
         db.session.add(res)
         db.session.commit()
-        return jsonify({"message": "success"})
+        return redirect(url_for('user', referral_code=referral_code))
 
 
-@app.route("/user")
-def user():
-
-    return render_template("user.html")
+@app.route("/user/<referral_code>")
+def user(referral_code):
+    session["referral_code"] = referral_code
+    user = Users.query.filter_by(referral_code=referral_code).first()
+    notifs = Notifications.query.filter_by(user_id=user.user_id).all()
+    history = Withdrawals.query.filter_by(user_id=user.user_id).all()
+    return render_template("user.html", user=user, history=history, notifs=notifs)
 
 @app.route("/home")
 def home():
+    if "referral_code" in session:
+        referral_code = session["referral_code"]
+        user = Users.query.filter_by(referral_code=referral_code).first()
+        history = Withdrawals.query.filter_by(user_id=user.user_id).all()
+        diamonds = Diamonds.query.filter_by(user_id=user.user_id).first()
+        stake = Stake.query.filter_by(user_id=user.user_id).first()
+        return render_template("index.html", user=user, history=history, diamonds=diamonds.amount, stake=stake.amount)
+    return render_template("index.html", user=[], history=[], diamond="", stake="")
 
-    return render_template("index.html")
+@app.route("/retrieve", methods = ["POST"])
+def retrieve():
+    if request.method == "POST":
+        referral_code = request.form["referral_code"]
+        session.pop("referral_code", None)
+        session["referral_code"] = referral_code
+    return redirect(url_for('home'))
+
+
 
 @app.route("/users")
 def users():
-
-    return render_template("users.html")
+    session.pop("referral_code", None)
+    users = Users.query.all()
+    return render_template("users.html", users=users)
 
 @app.route("/complaints")
 def complaints():
-
-    return render_template("complaints.html")
+    complaints = LiveChat.query.all()
+    return render_template("complaints.html", complaints=complaints)
 
 @app.route("/wr")
 def wr():
+    wr = Withdrawals.query.all()
+    return render_template("wr.html", wr=wr)
 
-    return render_template("wr.html")
+@app.route("/complaint/<user_id>/<created>")
+def complaint(user_id,created):
+    user = Users.query.filter_by(user_id=user_id).first()
+    session["referral_code"] = user.referral_code
+    complaint = LiveChat.query.filter_by(user_id=user_id, Created=created).first()
+    return render_template("complaint.html", complaint=complaint)
 
-@app.route("/complaint")
-def complaint():
 
-    return render_template("complaint.html")
+@app.route("/admin_add_diamond", methods = ["POST"])
+def admin_add_diamond():
+    if request.method=="POST":
+        amount = request.form["amount"]
+        referral_code = session["referral_code"]
+        user = Users.query.filter_by(referral_code=referral_code).first()
+        add_dia = Diamonds.query.filter_by(user_id=user.user_id).first()
+        if add_dia:
+            add_dia.amount = float(add_dia.amount) + float(amount)
+            notif = Notifications(
+            user_id=user.user_id,
+            message=f"Congratulations, Admin have added {str(amount)} diamonds to you.",
+            )
+            db.session.add(notif)
+            db.session.commit()
+            return redirect(url_for('user', referral_code=referral_code))
+
+@app.route("/send_notif", methods = ["POST"])
+def send_notif():
+    if request.method=="POST":
+        msg = request.form["notif"]
+        referral_code = session["referral_code"]
+        user = Users.query.filter_by(referral_code=referral_code).first()
+        notif = Notifications(
+            user_id=user.user_id,
+            message=f"{msg}",
+        )
+        db.session.add(notif)
+        db.session.commit()
+
+
 
 def is_date(string, fuzzy=True):
     """
@@ -588,4 +654,4 @@ def is_date(string, fuzzy=True):
 
 if __name__ == "__main__":
     db.create_all()
-    app.run(debug=True, port=5004)
+    app.run(debug=True, port=5000)

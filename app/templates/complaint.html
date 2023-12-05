@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="static/assets/css/styles.css" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/styles.css') }}" />
     <title>Diamond Admin</title>
 </head>
 
@@ -13,7 +13,7 @@
         <h1>User Complaint</h1>
     </header>
     <div class="sidebar">
-        <img src="static/assets/images/download.jpg" alt="LOGO" style="height: 75px; width: 70px; border-radius: 50px" />
+        <img src="{{ url_for('static', filename='assets/images/download.jpg')}}" alt="LOGO" style="height: 75px; width: 70px; border-radius: 50px" />
         <br /><br /><br />
         <a class="active" href="{{url_for('home')}}">Home</a>
     <a class="active" href="{{url_for('users')}}">Users</a>
@@ -41,19 +41,20 @@
             ">
                    
                     <br />
-                <pre style="overflow: auto">Subject:  subject </pre>
+                Subject:
+                <br>
+                <p style="padding: 10px; font-family: monospace; font-weight: bold; font-size: larger;">  {{complaint.subject}}</p>
                 <br />
                 Message:
                 <br>
-                <br /><p style="font-family: monospace;">HI, I am trying to withdraw my trons but they are not withdrawing, can you please help me resolve the issue, 
-                thanks</p>
+                <p style="padding: 10px; font-family: monospace;">{{complaint.message}}</p>
                 <br />
                 
 
                 </p>
             </div>
-            <form id="chat-form" action="/parson_rec" method="post" enctype="multipart/form-data">
-                <input type="number" id="chat-input" placeholder="enter response here" name="response" />
+            <form id="chat-form" action="/chatRes" method="post" enctype="multipart/form-data">
+                <input type="text" id="chat-input" placeholder="enter response here" name="response" />
                 <button type="submit" id="submit-button">Send</button>
             </form>
         </section>

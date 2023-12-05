@@ -37,9 +37,9 @@
                 font-family: Verdana, Geneva, Tahoma, sans-serif;
               "
             >
-              <br />subject {{compl.subject}} <br />
+              <br />subject:    <a href="{{url_for('complaint', user_id=compl.user_id, created=compl.Created)}}">{{compl.subject}} </a><br />
               <br />
-              <pre style="overflow: auto">username {{compl.name}}</pre>
+              <pre style="overflow: auto">username: {{compl.name}}</pre>
               <br />
             </h3>
           </div>

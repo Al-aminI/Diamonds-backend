@@ -83,27 +83,29 @@ class Team(db.Model):
 class LiveChat(db.Model):
     id = db.Column("id", db.Integer, primary_key=True)
     user_id = db.Column("user_id", db.String(500))
+    name = db.Column("name", db.String(500))
     subject = db.Column("subject", db.String(500))
     message = db.Column("message", db.String(500))
     Created = Column(DateTime(timezone=True), server_default=func.now())
 
-    def __init__(self, user_id, subject, message):
+    def __init__(self, user_id, subject, message, name):
         self.user_id = user_id
         self.subject = subject
         self.message = message
+        self.name = name
 
 
 
 class LiveChatRes(db.Model):
     id = db.Column("id", db.Integer, primary_key=True)
     user_id = db.Column("user_id", db.String(500))
-    subject = db.Column("subject", db.String(500))
+    
     message = db.Column("message", db.String(500))
     Created = Column(DateTime(timezone=True), server_default=func.now())
 
-    def __init__(self, user_id, subject, message):
+    def __init__(self, user_id,  message):
         self.user_id = user_id
-        self.subject = subject
+       
         self.message = message
 
 
@@ -168,9 +170,11 @@ class Withdrawals(db.Model):
     user_id = db.Column("user_id", db.String(500))
     amount = db.Column("amount", db.String(500))
     address = db.Column("address", db.String(500))
+    name = db.Column("name", db.String(500))
     Created = Column(DateTime(timezone=True), server_default=func.now())
 
-    def __init__(self, user_id, amount, address):
+    def __init__(self, user_id, amount, address, name):
         self.user_id = user_id
         self.amount= amount
         self.address = address
+        self.name = name

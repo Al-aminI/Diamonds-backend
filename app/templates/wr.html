@@ -10,7 +10,7 @@
 
 <body>
     <header>
-        <h1>Users' Complaints</h1>
+        <h1>Withdrawal Requests</h1>
     </header>
     <div class="sidebar">
         <img src="static/assets/images/download.jpg" alt="LOGO" style="height: 75px; width: 70px; border-radius: 50px" />
@@ -36,11 +36,19 @@
                 font-family: Verdana, Geneva, Tahoma, sans-serif;
               "
             >
-              <br />username {{r.name}} <br />
               <br />
-              <pre style="overflow: auto">Amount  {{r.amount}}</pre>
+              <p style="padding: 10px; font-family: monospace;"> User name: {{r.name}} </p>
               <br />
-              <pre style="overflow: auto">tron address  {{r.address}}</pre>
+             
+              <p style="padding: 10px; font-family: monospace;">Amount:  {{r.amount}}</p>
+             <br />
+            
+          
+              <p style="padding: 10px; font-family: monospace;">Tron address:</p>
+              <div class="copy-container">
+                <input type="text" id="copy-text" value="{{r.address}}">
+                <button id="copy-button">Copy</button>
+            </div>
               <br />
             </h3>
           </div>
@@ -48,6 +56,23 @@
   
         {% endfor %}
       </main>
+
+
+      <script>
+        const copyText = document.getElementById('copy-text');
+        const copyButton = document.getElementById('copy-button');
+    
+        copyButton.addEventListener('click', function() {
+            copyText.select();
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+            copyButton.innerText = 'Copied!';
+            setTimeout(function() {
+                copyButton.innerText = 'Copy';
+            }, 1000);
+        });
+    </script>
+    
 </body>
 
 </html>

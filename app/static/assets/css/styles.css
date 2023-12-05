@@ -222,3 +222,18 @@ h2 {
     padding: 20px;
   }
 }
+.copy-container {
+  display: flex;
+  align-items: center;
+}
+
+#copy-text {
+  flex-grow: 1;
+  padding: 5px;
+}
+
+#copy-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
