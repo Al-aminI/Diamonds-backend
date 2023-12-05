@@ -12,7 +12,7 @@ from dateutil.parser import parse
 import random
 import string
 from app import create_app, db
-from app.models.models import (
+from src.app.models.models import (
   
     DiamondTasks,
     Diamonds,
