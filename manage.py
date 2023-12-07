@@ -222,9 +222,10 @@ def login():
         check_user = Users.query.filter_by(email=email, password=password).first()
         if check_user:
             #print("id", check_user.user_id, email, password)
-            return jsonify({"message": "success", "user_id": check_user.user_id})
-        print("not success")
-        return jsonify({"message": "no_user"})
+            return jsonify({"message": "success", "user_id": check_user.user_id, "status_code": "200"})
+        #print("not success")
+        else:
+            return jsonify({"message": "no_user", "status_code":"401"})
 
 
 ##########################################################################################
